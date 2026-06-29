@@ -111,6 +111,16 @@
             cursor: pointer;
             position: relative;
             box-shadow: 0 4px 15px rgba(139, 90, 43, 0.15);
+            overflow: hidden; /* 关键：裁剪超出圆形的部分 */
+        }
+
+        /* 新增：让图片填满头像框 */
+        .sidebar-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
         }
 
         .sidebar-avatar:hover {
@@ -779,6 +789,7 @@
         <aside class="sidebar">
             <div class="sidebar-avatar">
                 <img src="images/avatar.jpg" alt="ixia">
+            </div>
             <div class="sidebar-name">ixia</div>
             <div class="sidebar-tagline">Researcher · Developer · Dreamer</div>
             <div class="sidebar-affiliation">Xi'an University of Technology</div>
