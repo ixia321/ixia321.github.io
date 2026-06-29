@@ -21,12 +21,14 @@
             --text-light: #8B7355;
         }
 
-        /* 固定背景 */
+        /* 固定背景 - 交错波点 */
         body {
             background: 
                 url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%238B5A2B' fill-opacity='0.08'%3E%3Ccircle cx='30' cy='30' r='5'/%3E%3C/g%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%238B5A2B' fill-opacity='0.08'%3E%3Ccircle cx='0' cy='0' r='5'/%3E%3Ccircle cx='60' cy='60' r='5'/%3E%3C/g%3E%3C/svg%3E"),
                 linear-gradient(135deg, var(--cream) 0%, var(--light-pink) 100%);
-            background-size: auto, 100% 100%;
+            background-size: auto, auto, 100% 100%;
+            background-position: 0 0, 30px 30px, 0 0; /* 第二层偏移30px实现交错 */
             background-attachment: fixed;
             min-height: 100vh;
             font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
@@ -57,7 +59,6 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
-            /* 核心：半透明毛玻璃 */
             background: rgba(255, 255, 255, 0.45);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -71,7 +72,6 @@
             scrollbar-color: var(--pink) transparent;
         }
 
-        /* 自定义滚动条 */
         .sidebar::-webkit-scrollbar {
             width: 4px;
         }
@@ -83,7 +83,6 @@
             border-radius: 4px;
         }
 
-        /* 左侧栏顶部装饰线 */
         .sidebar::before {
             content: '';
             position: absolute;
@@ -111,10 +110,9 @@
             cursor: pointer;
             position: relative;
             box-shadow: 0 4px 15px rgba(139, 90, 43, 0.15);
-            overflow: hidden; /* 关键：裁剪超出圆形的部分 */
+            overflow: hidden;
         }
 
-        /* 新增：让图片填满头像框 */
         .sidebar-avatar img {
             width: 100%;
             height: 100%;
@@ -125,12 +123,8 @@
             z-index: 1;
         }
 
-        .sidebar-avatar:hover {
-            transform: scale(1.08) rotate(5deg);
-            box-shadow: 0 0 30px rgba(255, 181, 197, 0.5);
-        }
-
-        .sidebar-avatar::after {
+        /* 修复：星星用 ::before 并在 avatar 上，z-index 最高 */
+        .sidebar-avatar::before {
             content: '✨';
             position: absolute;
             top: -5px;
@@ -139,13 +133,20 @@
             opacity: 0;
             transition: all 0.3s;
             transform: scale(0);
-            z-index: 10; /* 新增：让星星在最上层 */
+            z-index: 100; /* 最高层级 */
             pointer-events: none;
+            filter: drop-shadow(0 2px 4px rgba(139, 90, 43, 0.3));
         }
 
-        .sidebar-avatar:hover::after {
+        .sidebar-avatar:hover::before {
             opacity: 1;
             transform: scale(1);
+        }
+
+        /* 移除原来的 ::after，改用 ::before */
+        .sidebar-avatar:hover {
+            transform: scale(1.08) rotate(5deg);
+            box-shadow: 0 0 30px rgba(255, 181, 197, 0.5);
         }
 
         .sidebar-name {
@@ -296,7 +297,6 @@
             overflow: hidden;
         }
 
-        /* 卡片角落装饰 */
         .card::before {
             content: '';
             position: absolute;
@@ -343,7 +343,6 @@
             transform: rotate(20deg) scale(1.2);
         }
 
-        /* 研究兴趣 */
         .interests {
             display: flex;
             flex-wrap: wrap;
@@ -391,7 +390,6 @@
             box-shadow: 0 4px 12px rgba(255, 181, 197, 0.3);
         }
 
-        /* 时间线 */
         .timeline {
             position: relative;
             padding-left: 30px;
@@ -455,7 +453,6 @@
             font-size: 0.85rem;
         }
 
-        /* 项目卡片 */
         .project-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -539,7 +536,6 @@
             border-color: var(--pink);
         }
 
-        /* 出版物 */
         .pub-item {
             padding: 16px 0;
             border-bottom: 1px solid rgba(139, 90, 43, 0.08);
@@ -600,7 +596,6 @@
             transform: translateY(-1px);
         }
 
-        /* 联系 */
         .contact-text {
             text-align: center;
             color: var(--text-light);
@@ -632,7 +627,6 @@
             box-shadow: 0 8px 20px rgba(139, 90, 43, 0.2);
         }
 
-        /* 回到顶部 */
         .back-to-top {
             position: fixed;
             bottom: 30px;
@@ -667,7 +661,6 @@
             box-shadow: 0 8px 20px rgba(255, 181, 197, 0.4);
         }
 
-        /* 爱心鼠标 */
         .cursor-heart {
             position: fixed;
             font-size: 1.2rem;
@@ -684,7 +677,6 @@
             100% { transform: scale(1); }
         }
 
-        /* 加载动画 */
         .loader {
             position: fixed;
             top: 0;
@@ -716,7 +708,6 @@
             50% { transform: translateY(-20px); }
         }
 
-        /* ===== 响应式 ===== */
         @media (max-width: 900px) {
             .page-wrapper {
                 flex-direction: column;
@@ -910,25 +901,6 @@
                         <a href="#">[Slides]</a>
                     </div>
                 </div>
-
-<!--                <div class="pub-item">-->
-<!--                    <div class="pub-title">Another Research Work: Extending Previous Ideas</div>-->
-<!--                    <div class="pub-authors">Co-author 1, <strong>Your Name</strong>, Co-author 2</div>-->
-<!--                    <div class="pub-venue">Workshop Name 2024</div>-->
-<!--                    <div class="pub-links">-->
-<!--                        <a href="#">[Paper]</a>-->
-<!--                        <a href="#">[Code]</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                <div class="pub-item">-->
-<!--                    <div class="pub-title">Preprint / ArXiv Paper on an Ongoing Project</div>-->
-<!--                    <div class="pub-authors"><strong>Your Name</strong> et al.</div>-->
-<!--                    <div class="pub-venue">arXiv 2025</div>-->
-<!--                    <div class="pub-links">-->
-<!--                        <a href="#">[arXiv]</a>-->
-<!--                    </div>-->
-<!--                </div>-->
             </div>
 
             <!-- Contact -->
