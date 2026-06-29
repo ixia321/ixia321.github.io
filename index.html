@@ -21,14 +21,12 @@
             --text-light: #8B7355;
         }
 
-        /* 固定背景 - 交错波点 */
+        /* 固定背景 - 交错波点（奇数行偶数行错开） */
         body {
             background: 
                 url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%238B5A2B' fill-opacity='0.08'%3E%3Ccircle cx='30' cy='30' r='5'/%3E%3C/g%3E%3C/svg%3E"),
-                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%238B5A2B' fill-opacity='0.08'%3E%3Ccircle cx='0' cy='0' r='5'/%3E%3Ccircle cx='60' cy='60' r='5'/%3E%3C/g%3E%3C/svg%3E"),
                 linear-gradient(135deg, var(--cream) 0%, var(--light-pink) 100%);
-            background-size: auto, auto, 100% 100%;
-            background-position: 0 0, 30px 30px, 0 0; /* 第二层偏移30px实现交错 */
+            background-size: 60px 60px, 100% 100%;
             background-attachment: fixed;
             min-height: 100vh;
             font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
@@ -47,7 +45,7 @@
             gap: 30px;
         }
 
-        /* ===== 左侧栏：透明悬浮卡片风格 ===== */
+        /* ===== 左侧栏 ===== */
         .sidebar {
             width: 300px;
             position: sticky;
@@ -95,6 +93,12 @@
             opacity: 0.6;
         }
 
+        /* 头像包装器：星星放这里，不受 overflow:hidden 限制 */
+        .avatar-wrapper {
+            position: relative;
+            margin-bottom: 18px;
+        }
+
         .sidebar-avatar {
             width: 120px;
             height: 120px;
@@ -105,7 +109,6 @@
             align-items: center;
             justify-content: center;
             font-size: 3.5rem;
-            margin-bottom: 18px;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             position: relative;
@@ -119,34 +122,31 @@
             object-fit: cover;
             border-radius: 50%;
             display: block;
-            position: relative;
-            z-index: 1;
         }
 
-        /* 修复：星星用 ::before 并在 avatar 上，z-index 最高 */
-        .sidebar-avatar::before {
+        .sidebar-avatar:hover {
+            transform: scale(1.08) rotate(5deg);
+            box-shadow: 0 0 30px rgba(255, 181, 197, 0.5);
+        }
+
+        /* 星星放到 avatar-wrapper 上，不受 avatar 的 overflow:hidden 限制 */
+        .avatar-wrapper::after {
             content: '✨';
             position: absolute;
             top: -5px;
             right: -5px;
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             opacity: 0;
             transition: all 0.3s;
             transform: scale(0);
-            z-index: 100; /* 最高层级 */
+            z-index: 10;
             pointer-events: none;
             filter: drop-shadow(0 2px 4px rgba(139, 90, 43, 0.3));
         }
 
-        .sidebar-avatar:hover::before {
+        .avatar-wrapper:hover::after {
             opacity: 1;
             transform: scale(1);
-        }
-
-        /* 移除原来的 ::after，改用 ::before */
-        .sidebar-avatar:hover {
-            transform: scale(1.08) rotate(5deg);
-            box-shadow: 0 0 30px rgba(255, 181, 197, 0.5);
         }
 
         .sidebar-name {
@@ -271,7 +271,7 @@
             animation: pulse 1.5s infinite;
         }
 
-        /* ===== 右侧内容区：也是透明卡片！ ===== */
+        /* ===== 右侧内容区 ===== */
         .main-content {
             flex: 1;
             min-width: 0;
@@ -782,8 +782,11 @@
 
         <!-- ===== 左侧透明悬浮栏 ===== -->
         <aside class="sidebar">
-            <div class="sidebar-avatar">
-                <img src="images/avatar.jpg" alt="ixia">
+            <!-- 头像包装器：星星放这里 -->
+            <div class="avatar-wrapper">
+                <div class="sidebar-avatar">
+                    <img src="images/avatar.jpg" alt="ixia">
+                </div>
             </div>
             <div class="sidebar-name">ixia</div>
             <div class="sidebar-tagline">Researcher · Developer · Dreamer</div>
